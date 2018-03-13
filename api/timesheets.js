@@ -12,7 +12,20 @@ const validateTimesheet = (req, res, next) => {
     } else {
         next();
     }
-}
+};
+
+timesheetsRouter.param('timesheetId', (req, res, next, id) => {
+    db.get(`SELECT * FROM Timesheet WHERE id = ${id}`,
+        (err, data) => {
+            if (err) {
+                next(err);
+            } else if (data) {
+                next();
+            } else {
+                res.sendStatus(404);
+            }
+        });
+});
 
 timesheetsRouter.get('/', (req, res, next) => {
     db.all(`SELECT * FROM Timesheet WHERE employee_id = ${req.params.employeeId}`,
